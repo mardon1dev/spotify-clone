@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.active {
+  color: white;
+}
+
+.home-bg {
+  background: linear-gradient(180deg, #604ec1 5.09%, #121212 43.28%);
+}
+.single-page {
+  background: linear-gradient(180deg, #def628 5.09%, #121212 43.28%);
+}
+.liked-page {
+  background: linear-gradient(180deg, #604ec1 5.09%, #121212 43.28%);
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
