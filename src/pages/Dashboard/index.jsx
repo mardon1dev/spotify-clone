@@ -3,7 +3,7 @@ import Search from "./Search";
 import Library from "./Library";
 import Playlist from "./Playlist";
 import LikedSongs from "./LikedSongs";
-import SinglePage from "./SInglePage";
+import SinglePage from "./SinglePage";
 import Category from "./Category";
 
 export {
