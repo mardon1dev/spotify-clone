@@ -1,30 +1,41 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { addLiked } from "../store/LikedSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { Context } from "../context/Context";
-import { LikeIcon } from "../assets/icons";
+import { CurrentPlayingActiveIcon, CurrentPlayingIcon, LikeIcon } from "../assets/icons";
 import CurrentPlaying from "./CurrentPlaying/CurrentPlaying";
 
-const MusicTableRow = ({ track, allMusics, setAllMusics, index }) => {
+const MusicTableRow = ({ track, index }) => {
   const liked = useSelector((state) => state.liked.likedList);
   const dispatch = useDispatch();
-  const { setPlay, setPlaying } = useContext(Context);
+
+  const {
+    setPlay,
+    setPlaying,
+    currentPlaying,
+    setCurrentPlaying,
+    currentPlayingMusic,
+    setCurrentPlayingMusic,
+  } = useContext(Context);
+
   function handlePlay(track, evt) {
     if (evt.target.id == "liked") {
       dispatch(addLiked(track));
     } else {
-      const updatedMusics = allMusics.map((item) =>
-        item.id === track.id
-          ? { ...item, isPlaying: !item.isPlaying }
-          : { ...item, isPlaying: false }
-      );
       setPlay(track.uri);
       setPlaying(true);
-      track.isPlaying = !track.isPlaying;
-      setAllMusics(updatedMusics);
+      setCurrentPlayingMusic(track);
     }
   }
+  useEffect(() => {
+    if (currentPlayingMusic.id === track.id) {
+      setCurrentPlayingMusic(track);
+      setCurrentPlaying(!currentPlaying);
+    }
+  }, [currentPlayingMusic, track]);
 
+
+  const isPlaying = track.id == currentPlayingMusic.id;
   const isLiked = liked.some((likedTrack) => likedTrack.id === track.id);
   return (
     <tr
@@ -32,8 +43,18 @@ const MusicTableRow = ({ track, allMusics, setAllMusics, index }) => {
       onClick={(evt) => handlePlay(track, evt)}
     >
       <td className="px-4 py-2 text-left text-white">
-        <div className="w-full flex items-center justify-center">
-          {track?.isPlaying ? <CurrentPlaying /> : index + 1}
+        <div className={`w-full flex items-center justify-center ${currentPlaying ? "" : "w-[26px] h-[30px]"} `}>
+          {isPlaying ? (
+            currentPlaying ? (
+              <CurrentPlaying />
+            ) : (
+              <div className="!scale-[.5]">
+                <CurrentPlayingIcon />
+              </div>
+            )
+          ) : (
+            index + 1
+          )}
         </div>
       </td>
       <td className="px-4 py-2">

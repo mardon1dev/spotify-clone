@@ -16,6 +16,18 @@
   background: linear-gradient(180deg, #604ec1 5.09%, #121212 43.28%);
 }
 
+.search-page {
+  background: linear-gradient(180deg, #604e11 5.09%, #121212 43.28%);
+}
+
+.volume,
+.slider,
+.volume-track,
+.slider-track{
+  cursor: pointer !important;
+}
+
+
 ::-webkit-scrollbar {
   display: none;
 }

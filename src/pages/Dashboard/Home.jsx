@@ -6,7 +6,13 @@ import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const navigate = useNavigate();
-  const { accessToken, setPlay, setPlaying } = useContext(Context);
+  const {
+    accessToken,
+    setPlay,
+    setPlaying,
+    setCurrentPlaying,
+    setCurrentPlayingMusic,
+  } = useContext(Context);
   const spotifyApi = new SpotifyWebApi({
     clientId: CLIENT_ID,
   });
@@ -82,10 +88,12 @@ const Home = () => {
   function handleNavigate(item) {
     setPlay(item.uri);
     setPlaying(true);
+    setCurrentPlaying(true);
+    setCurrentPlayingMusic(item);
     navigate(`/music/${item.id}`);
   }
 
-  function handleNavigateCategory (item) {
+  function handleNavigateCategory(item) {
     navigate(`/category/${item.id}`);
   }
   if (loading)
@@ -99,7 +107,7 @@ const Home = () => {
   if (error) return <div className="text-red-500">{error}</div>;
 
   return (
-    <div className="w-full home-bg h-full">
+    <div className="w-full home-bg min-h-screen">
       <div className="px-[40px] pt-[20px] pb-[80px] h-full">
         <h1 className="text-[40px] font-bold text-white">Good afternoon!</h1>
 

@@ -5,19 +5,18 @@ import { useParams } from "react-router-dom";
 import { Context } from "../../context/Context";
 
 const Category = () => {
-  const { id } = useParams(); // Assuming `id` is the album ID from the route
+  const { id } = useParams(); 
   const { accessToken, setPlay, setPlaying, play } = useContext(Context);
 
   const [albumDetails, setAlbumDetails] = useState({});
   const [allMusics, setAllMusics] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filterTerm, setFilterTerm] = useState(""); // Filter state
+  const [filterTerm, setFilterTerm] = useState("");
 
   const spotifyApi = new SpotifyWebApi({
     clientId: CLIENT_ID,
   });
 
-  // Fetch album details
   useEffect(() => {
     if (!accessToken) return;
     spotifyApi.setAccessToken(accessToken);
@@ -35,7 +34,6 @@ const Category = () => {
     fetchAlbumDetails();
   }, [accessToken, id]);
 
-  // Fetch tracks for the album
   useEffect(() => {
     if (!accessToken) return;
 
@@ -67,6 +65,8 @@ const Category = () => {
       track.name.toLowerCase().includes(filterTerm.toLowerCase()) ||
       track.artistName.toLowerCase().includes(filterTerm.toLowerCase())
   );
+
+  console.log(filteredTracks);
 
   if (loading) {
     return (

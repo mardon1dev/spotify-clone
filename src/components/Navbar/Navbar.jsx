@@ -56,7 +56,7 @@ const Navbar = () => {
   }
 
   return (
-    <div className="w-[25%] bg-black text-white h-screen sticky top-0 ">
+    <div className="w-[25%] bg-black text-white h-screen sticky top-0">
       <ul className="flex items-start justify-center flex-col mt-[70px] gap-5 px-[30px]">
         {navbarList.map((item) => (
           <li className="" key={item.id}>

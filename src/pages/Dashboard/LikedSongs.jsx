@@ -3,9 +3,10 @@ import { useSelector } from "react-redux";
 import MusicTableRow from "../../components/MusicTableRow";
 
 const LikedSongs = () => {
-    const liked = useSelector((state) => state.liked.likedList)
-    const [likedSongs, setLikedSongs] = useState(liked)
-  const [filterTerm, setFilterTerm] = useState("");
+  const liked = useSelector((state) => state.liked.likedList);
+  const [likedSongs, setLikedSongs] = useState(liked);
+
+  const [filterTerm, setFilterTerm] = useState("")
 
   const filteredTracks = liked.filter(
     (track) =>
@@ -15,15 +16,11 @@ const LikedSongs = () => {
 
   return (
     <div className="w-full liked-page min-h-screen">
-      <div className="px-[40px] pt-[20px] pb-[80px] h-full">
+      <div className="px-[40px] pt-[20px]">
         <div>
           <h1 className="text-[50px] text-white">Liked Songs</h1>
         </div>
-
         <div className="related-tracks">
-          <h2 className="text-[2rem] font-bold text-white mb-4">
-            Related Tracks
-          </h2>
           <div className="overflow-x-auto">
             <table className="min-w-full bg-[#000]/10 rounded-lg">
               <thead>
@@ -40,11 +37,9 @@ const LikedSongs = () => {
                 {filteredTracks.length > 0 ? (
                   filteredTracks.map((track, index) => (
                     <MusicTableRow
-                      allMusics={likedSongs}
-                      setAllMusics={setLikedSongs}
                       track={track}
                       index={index}
-                      key={index}
+                      key={track.id}
                     />
                   ))
                 ) : (

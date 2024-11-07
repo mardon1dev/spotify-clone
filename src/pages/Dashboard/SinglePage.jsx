@@ -16,12 +16,21 @@ const SinglePage = () => {
   const liked = useSelector((state) => state.liked.likedList);
   const dispatch = useDispatch();
   const { id } = useParams();
-  const { accessToken, setPlay, setPlaying, play } = useContext(Context);
+  const {
+    accessToken,
+    setPlay,
+    setPlaying,
+    play,
+    playing,
+    currentPlaying,
+    setCurrentPlaying,
+    currentPlayingMusic,
+    setCurrentPlayingMusic,
+  } = useContext(Context);
 
   const [singleTrack, setSingleTrack] = useState({});
   const [allMusics, setAllMusics] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [ifPlaying, setIfPlaying] = useState(false);
   const [filterTerm, setFilterTerm] = useState("");
 
   const spotifyApi = new SpotifyWebApi({
@@ -31,22 +40,34 @@ const SinglePage = () => {
   useEffect(() => {
     if (!accessToken) return;
     spotifyApi.setAccessToken(accessToken);
-
-    const fetchSingleTrack = async () => {
-      try {
-        const response = await spotifyApi.getTrack(id);
-        setSingleTrack(response.body);
-      } catch (err) {
-        console.error("Error fetching track:", err);
-      }
-    };
-
-    fetchSingleTrack();
-    setLoading(false);
   }, [accessToken, id]);
 
   useEffect(() => {
     if (!accessToken) return;
+
+    const fetchSingleTrack = async () => {
+      try {
+        const response = await spotifyApi.getTrack(id);
+        console.log(response);
+        const newTrack = {
+          id: response.body.id,
+          name: response.body.name,
+          artistName: response.body.artists?.[0].name,
+          image: response.body.album.images?.[0].url,
+          uri: response.body.uri,
+          isPlaying: true,
+        };
+        setSingleTrack(newTrack);
+      } catch (err) {
+        console.error("Error fetching track:", err);
+      }
+    };
+    fetchSingleTrack();
+    setLoading(false);
+  }, [accessToken]);
+
+  useEffect(() => {
+    if (!accessToken || !singleTrack.name) return;
 
     const fetchRelatedTracks = async () => {
       try {
@@ -66,21 +87,24 @@ const SinglePage = () => {
         );
       } catch (err) {
         console.error("Error fetching related tracks:", err);
+      } finally {
+        setLoading(false);
       }
     };
-
     fetchRelatedTracks();
-    setLoading(false);
-  }, [singleTrack, accessToken]);
+  }, [singleTrack?.name, accessToken]);
+  
 
   useEffect(() => {
-    setIfPlaying(play.includes(singleTrack.id));
-  }, [play, singleTrack]);
+    setCurrentPlaying(play.includes(currentPlayingMusic.id));
+  }, [play, currentPlayingMusic.id]);
+
 
   function togglePlay() {
-    setIfPlaying((prev) => !prev);
+    setCurrentPlaying(!currentPlaying);
     setPlay(singleTrack.uri);
-    setPlaying(!ifPlaying);
+    setPlaying(!playing);
+    setCurrentPlayingMusic(singleTrack)
   }
 
   const filteredTracks = allMusics.filter(
@@ -93,6 +117,7 @@ const SinglePage = () => {
     dispatch(addLiked(item));
   }
 
+  const isPlaying = singleTrack.id == currentPlayingMusic.id;
   const isLiked = liked.some((likedTrack) => likedTrack.id === singleTrack.id);
 
   if (loading) {
@@ -107,10 +132,10 @@ const SinglePage = () => {
     <div className="w-full single-page min-h-screen">
       <div className="px-[40px] pt-[20px] pb-[80px] h-full">
         <div className="w-full flex items-start gap-5">
-          {singleTrack?.album && (
+          {singleTrack && (
             <img
               className="h-[297px]"
-              src={singleTrack?.album?.images[0]?.url}
+              src={singleTrack?.image}
               alt={singleTrack?.name}
               width={297}
               height={297}
@@ -122,7 +147,7 @@ const SinglePage = () => {
             </h1>
             <p className="text-[1.5rem] text-white">
               <strong>Made by: </strong>
-              {/* {singleTrack?.artists[0]?.name} */}
+              {singleTrack?.artistName}
             </p>
           </div>
         </div>
@@ -130,14 +155,16 @@ const SinglePage = () => {
         <div className="py-[30px] flex items-center justify-between">
           <div className="flex items-center gap-6">
             <button onClick={togglePlay}>
-              {ifPlaying ? (
+              {isPlaying && currentPlaying ? (
                 <CurrentPlayingActiveIcon />
               ) : (
                 <CurrentPlayingIcon />
               )}
             </button>
             <button
-              className={`${isLiked ? "text-green-500" : "text-white"} scale-125`}
+              className={`${
+                isLiked ? "text-green-500" : "text-white"
+              } scale-125`}
               onClick={() => handleLike(singleTrack)}
             >
               <LikeIcon />
@@ -172,13 +199,11 @@ const SinglePage = () => {
                 {filteredTracks.length > 0 ? (
                   filteredTracks.map((track, index) => (
                     <MusicTableRow
-                      allMusics={allMusics}
-                      setAllMusics={setAllMusics}
                       track={track}
                       index={index}
                       setPlay={setPlay}
                       setPlaying={setPlaying}
-                      key={index}
+                      key={track.id}
                     />
                   ))
                 ) : (
