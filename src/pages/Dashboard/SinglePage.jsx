@@ -48,7 +48,6 @@ const SinglePage = () => {
     const fetchSingleTrack = async () => {
       try {
         const response = await spotifyApi.getTrack(id);
-        console.log(response);
         const newTrack = {
           id: response.body.id,
           name: response.body.name,
@@ -93,7 +92,6 @@ const SinglePage = () => {
     };
     fetchRelatedTracks();
   }, [singleTrack?.name, accessToken]);
-  
 
   useEffect(() => {
     setCurrentPlaying(play.includes(currentPlayingMusic.id));
@@ -106,6 +104,8 @@ const SinglePage = () => {
     setPlaying(!playing);
     setCurrentPlayingMusic(singleTrack)
   }
+
+  console.log(allMusics);
 
   const filteredTracks = allMusics.filter(
     (track) =>

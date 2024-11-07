@@ -43,7 +43,7 @@ const MusicTableRow = ({ track, index }) => {
       onClick={(evt) => handlePlay(track, evt)}
     >
       <td className="px-4 py-2 text-left text-white">
-        <div className={`w-full flex items-center justify-center ${currentPlaying ? "" : "w-[26px] h-[30px]"} `}>
+        <div className={`flex items-center justify-center ${currentPlaying ? "w-full" : "w-[26px] h-[30px]"} `}>
           {isPlaying ? (
             currentPlaying ? (
               <CurrentPlaying />

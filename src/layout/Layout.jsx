@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar/Navbar";
-import Routers from "../routes/routers";
+import Routers from "../routes/Routers";
 import Aside from "../components/Aside/Aside";
 import useAuth from "../hook/useAuth";
 import { BackIcon, FrontIcon } from "../assets/icons";
